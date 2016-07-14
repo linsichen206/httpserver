@@ -9,18 +9,29 @@
 //HTTPResponse.h
 #include <iostream>
 #include <string>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sstream>
 #define MAXURILINE 50;
 using namespace std;
 
 class HTTPResponse
 {
 public:
-	HTTPResponse();
+	HTTPResponse(int fd, string uri);
 	~HTTPResponse();
-	//void Requestparse(char* buf, HTTPRequest* request);
-	void parse_uri(char * uri);
-	void DealGET(char*buf, char * filename);	
+	void responderror(const string errnum, const string msg, const string longmsg);
+	//void Requestparse(char* buf, HTTPRequest* request);	
 private:
+	int getfd() const;
+	const string getfilename();
+	const string getfiletype();
+	struct stat& getStat();
+	const string typetostr(string::size_type sizeType);
+	const string buildreserrorheaders(const string errnum, const string msg);
+	const string buildreserrorbody(const string errnum,const string msg, const string longmsg);
+	const string buildresheaders();
+	struct stat sbuf;
 	int fileDescriptor;
 	string filename;
 };
