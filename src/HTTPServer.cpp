@@ -34,7 +34,7 @@ int http_server::recv_msg(){
 			continue;
 		}
 		printf("Receive a connettion from %s\n", (char*) inet_ntoa(remote_addr.sin_addr));
-		if(!fork()){
+	//	if(!fork()){
 			char buffer[MAXSIZE];
 			memset(buffer, 0, MAXSIZE);
 			if((read(accept_fd, buffer, MAXSIZE)) < 0) {
@@ -44,14 +44,14 @@ int http_server::recv_msg(){
 				//break;
 				char outbuffer[MAXSIZE];
 				HTTPRequest *req = new HTTPRequest(buffer);
-				HTTPResponse *res = new HTTPResponse();
-				res->Requestparse(outbuffer,req);
+				//HTTPResponse *res = new HTTPResponse();
+				//res->Requestparse(outbuffer,req);
 				//cout<<outbuffer<<endl;
-				int n = strlen(outbuffer);
-				write(accept_fd,outbuffer,strlen(outbuffer));	
+				//int n = strlen(outbuffer);
+				//write(accept_fd,outbuffer,strlen(outbuffer));	
 			}
 			exit(0);
-		}
+	//	}
 		close(accept_fd);
 	}
 	return 0;

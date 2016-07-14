@@ -31,8 +31,9 @@ void HTTPResponse :: parse_uri(char* uri){
 	char tmpcwd[100];
 	cwd = (char*)get_current_dir_name();
 	strcpy(tmpcwd,cwd);
-	strcat(tmpcwd,"/");
-	strcat(tmpcwd,uri); 
+	//strcat(tmpcwd,"/");
+	strcat(tmpcwd,uri);
+	strcpy(this->uri,tmpcwd); 
 };
 
 void HTTPResponse :: DealGET(char*buf, char* filename){

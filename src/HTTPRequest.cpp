@@ -9,21 +9,27 @@
 //HTTPRequest.cpp
 
 #include "HTTPRequest.h"
-#include <sstream>
+#include "HTTPGetRequest.h"
+#include <stdio.h>
 
-HTTPRequest :: HTTPRequest(char *buffer){
-	Requestparse(buffer);	
-};
+HTTPRequest::HTTPRequest(int fd):fileDescriptor(fd) {
+	//this->fileDescriptor = fd;
+	//
+	//Requestparse(buf);
+//	fileDescriptor = fd;
+}
 
-void HTTPRequest :: Requestparse(char* buf){
-	char METHOD[5],URI[50];
+void HTTPRequest :: Requestparse(char *buf){
+	char METHOD[MAXMETHODLINE],URI[MAXURILINE];
 	sscanf(buf, "%s %s",METHOD,URI);
+	this->method = METHOD;
+	this->uri = URI;
 	/*string METHOD,FILEPATH,VERSION;
 	istringstream ss(this.buffer);
 	ss>>METHOD>>FILEPATH>>VERSION;
 	uri[0] = METHOD;
 	uri[1] = FILEPATH;string _uri = geturi();
-	string METHOD = uri[0];*/
+	string METHOD = uri[0];
 	if(strcmp(METHOD, "GET"))
 		strcpy(method, "GET");
 	else if(strcmp(METHOD, "POST"))
@@ -32,6 +38,13 @@ void HTTPRequest :: Requestparse(char* buf){
 		strcpy(method,"HEAD");
 	else
 		strcpy(method,"ERRORRequest");
-	strcpy(this->URI, URI);
-};
+	strcpy(this->URI, URI);*/
+}
 
+void HTTPRequest :: run()
+{
+	if(this->method == "GET"){
+		HTTPGetRequest METHOD_GET(this->fileDescriptor, this->uri);
+		METHOD_GET.run();
+	}
+}

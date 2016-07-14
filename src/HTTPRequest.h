@@ -7,16 +7,25 @@
  */
 
 //Requset.h
+#include <iostream>
+#include <string>
 #define MAXMETHODLINE 10
-#define MAXURILINE 50
+#define MAXURILINE 20
+#define MAXSIZE 100
 
+using namespace std;
 
 class HTTPRequest{
 public:
-	HTTPRequest(char *);
-	~HTTPRequest();
+	HTTPRequest(int fd);
+	virtual ~HTTPRequest();
 	void Requestparse(char *);
-	char method[MAXMETHODLINE];
-	char URI[MAXURILINE];
+	const string& geturi() const;
+private:
+	int fileDescriptor;
+	//char buf[MAXSIZE];
+	string method;
+	string uri;
+	void run();
 };
 
