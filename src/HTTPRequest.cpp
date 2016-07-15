@@ -7,9 +7,9 @@
  */
 
 //HTTPRequest.cpp
-
+//#include <string>
 #include "HTTPRequest.h"
-#include "HTTPGetRequest.h"
+//#include "HTTPGetRequest.h"
 #include <stdio.h>
 
 HTTPRequest::HTTPRequest(int fd):fileDescriptor(fd) {
@@ -43,8 +43,8 @@ void HTTPRequest :: Requestparse(char *buf){
 
 void HTTPRequest :: run()
 {
-	if(this->method == "GET"){
-		HTTPGetRequest METHOD_GET(this->fileDescriptor, this->uri);
+	if(method == "GET"){
+		HTTPGetRequest METHOD_GET(fileDescriptor, uri);
 		METHOD_GET.run();
 	}
 }

@@ -6,6 +6,8 @@
  *
  */
 
+//HTTPGetRequest.cpp
+//
 #include "HTTPGetRequest.h"
 #include "HTTPResponse.h"
 
@@ -22,7 +24,7 @@ bool HTTPGetRequest :: parse_uri()
 	return true;
 }
 
-const string& HTTPGetRequest::geturi() const
+const string HTTPGetRequest::geturi() const
 {
 	return uri;
 }
@@ -32,5 +34,7 @@ int HTTPGetRequest::getfd() const
 }
 void HTTPGetRequest :: run()
 {
-	//HTTPResponse();
+	//cout<<"Running"<<endl;
+	HTTPResponse Res(fileDescriptor,uri);
+	Res.run();
 }

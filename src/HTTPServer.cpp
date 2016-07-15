@@ -2,8 +2,8 @@
  * DATE:2016078 */
 
 #include "server.h"
-#include "HTTPRequest.cpp"
-#include "HTTPResponse.cpp"
+#include "HTTPRequest.h"
+//#include "HTTPResponse.h"
 http_server::http_server(){
 	
 	if((socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0 ){
@@ -43,7 +43,9 @@ int http_server::recv_msg(){
 				//printf("Received message: %s\n", buffer);
 				//break;
 				char outbuffer[MAXSIZE];
-				HTTPRequest *req = new HTTPRequest(buffer);
+				HTTPRequest *req = new HTTPRequest(accept_fd);
+				req->Requestparse(buffer);
+				req->run();
 				//HTTPResponse *res = new HTTPResponse();
 				//res->Requestparse(outbuffer,req);
 				//cout<<outbuffer<<endl;

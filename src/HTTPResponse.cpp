@@ -10,6 +10,7 @@
 
 #include "HTTPResponse.h"
 #include "ERRORHEAD.h"
+#include <stdexcept>
 
 HTTPResponse :: HTTPResponse(int fd, string uri): fileDescriptor(fd),filename(uri){
 
@@ -62,7 +63,7 @@ const string HTTPResponse::buildresheaders()
 		+"\r\n"+"Content-type: "+getfiletype()+"\r\n\r\n";
 }
 
-const string HTTPResponse::getfilename()
+const string HTTPResponse::getfilename() 
 {
 	return filename;
 }
@@ -77,7 +78,7 @@ struct stat& HTTPResponse::getStat()
 	return sbuf;
 }
 
-const string getfiletype()
+const string HTTPResponse::getfiletype()
 {
 	string filename = getfilename();
 	if(filename.find(".html"))
@@ -90,4 +91,12 @@ const string getfiletype()
 		return string("text/plain");
 }
 
-
+void HTTPResponse::respond()
+{
+	cout<<"respond"<<endl;
+	if(stat(const_cast<char*>(filename.c_str()),&sbuf) < 0)
+		throw ERROR("404","Not found","The Web server couldn't find this file.");
+	if(!(S_ISREG(sbuf.st_mode))||!(S_IRUSR & sbuf.st_mode))
+		throw ERROR("403","Forbidden","Fobidden this request");
+	//write
+}

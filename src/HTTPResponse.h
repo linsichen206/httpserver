@@ -12,17 +12,19 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sstream>
-#define MAXURILINE 50;
+//#define MAXURILINE 50;
 using namespace std;
 
 class HTTPResponse
 {
 public:
 	HTTPResponse(int fd, string uri);
-	~HTTPResponse();
+	//~HTTPResponse();
 	void responderror(const string errnum, const string msg, const string longmsg);
+	void run();
 	//void Requestparse(char* buf, HTTPRequest* request);	
 private:
+	void respond();
 	int getfd() const;
 	const string getfilename();
 	const string getfiletype();

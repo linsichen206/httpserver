@@ -5,19 +5,20 @@
  *
  *
  */
-
+#include <iostream>
 #include <string>
-#include <stdio.h>
+//#include <stdio.h>
 using namespace std;
 class HTTPGetRequest
 {
 public:
 	HTTPGetRequest(int fd, string uri);
-	~HTTPGetRequest();
+	//~HTTPGetRequest();
 	void run();
 	bool parse_uri();
 private:
-	const &string geturi() const;
+	
+	const string geturi() const;
 	int getfd() const;
 	int fileDescriptor;
 	string uri;
