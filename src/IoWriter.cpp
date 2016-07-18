@@ -76,25 +76,23 @@ void Munmap(void *start, size_t length)
 		throw("munmap error");
 }
 
-}
 
 IoWriter::IoWriter(int fd) : fileDescriptor(fd)
 {
 
 }
 
-void IoWriter::writeString(const std::string& str)
+void IoWriter::writeString(const string& str)
 {
 	Rio_writen(fileDescriptor, const_cast<char*>(str.c_str()), str.length());
 }
 
-void IoWriter::writeFile(const std::string& fileName, int filesSize)
+void IoWriter::writeFile(const string& fileName, int filesSize)
 {
 	int srcfd;
 	char *srcp;
 	srcfd = Open(const_cast<char*>(fileName.c_str()), O_RDONLY, 0);
-	srcp = reinterpret_cast<char*>(Mmap(0, filesSize, PROT_READ, MAP_PRIVATE,
-			srcfd, 0));
+	srcp = reinterpret_cast<char*>(Mmap(0, filesSize, PROT_READ, MAP_PRIVATE,srcfd, 0));
 	Close(srcfd);
 	Rio_writen(fileDescriptor, srcp, filesSize);
 	Munmap(srcp, filesSize);

@@ -20,7 +20,8 @@ bool HTTPGetRequest :: parse_uri()
 	uri = "test" + content;
 	//cwd = (string*)getcwd();
 	//uri = cwd + content;
-//	if	
+	//if(uri[uri.length() - 1] == '/')
+	//	uri += "index.html";
 	return true;
 }
 
@@ -34,7 +35,8 @@ int HTTPGetRequest::getfd() const
 }
 void HTTPGetRequest :: run()
 {
-	//cout<<"Running"<<endl;
+	parse_uri();
+	cout<<uri<<endl;
 	HTTPResponse Res(fileDescriptor,uri);
 	Res.run();
 }
