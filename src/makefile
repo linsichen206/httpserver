@@ -9,6 +9,6 @@ HTTPRequest.o:HTTPRequest.cpp HTTPRequest.h
 IoWriter.o:IoWriter.h
 	g++ -c IoWriter.cpp
 HTTPResponse.o:HTTPResponse.h ERRORHEAD.h
-	g++ -c  HTTPResponse.cpp
+	g++ -c -g HTTPResponse.cpp
 clean:
 	rm -rf *.o

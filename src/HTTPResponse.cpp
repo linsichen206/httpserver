@@ -46,7 +46,7 @@ const string HTTPResponse::buildreserrorbody(const string errnum,const string ms
 	string content = "<html><title>Error</title>"
 			+string("<body bgcolor= ffffff >\r\n")
 			+errnum+": "+msg+"\r\n"+"<p>"+longmsg+": "+filename
-			+"<hr><em>The Web server powered by seven</em>\r\n";
+			+"<hr><em>The Web server powered by sven</em>\r\n";
 	return "Content-length: "+typetostr(content.length())+"\r\n\r\n"
 				+content;
 }
@@ -72,31 +72,56 @@ const string HTTPResponse::buildresheaders()
 {
 	return "HTTP/1.0 200 OK\r\n"+string("Server: Web server by Sven\r\n")
 		+string("Content-length: ")+typetostr(getStat().st_size)
-		+"\r\n"+"Content-type: "+getfiletype()+"\r\n\r\n";
+		+"\r\n"+"Content-type: "+getfiletype()+/*"charset = utf-8"*/+"\r\n\r\n";
 }
 
-/*const string HTTPResponse::dir_server(){
-	string s= "<html><title>Directory</title> "
-		+string("<style type=""text/css"">a:link{text-decoration:none;}</style>")
-		+string("<body bocolor =""ffffff"" font-family=Arial color=#fff font-size=14px>\r\n>");
+const string HTTPResponse::dir_server(){
+	string s= "<html><title> Directory </title>"
+		+string("<meta http-equiv=""content-type"" content=""text/html;charset = utf-8""> ")	
+		+string("<style type=text/css>a:link{text-decoration:none;}</style>")
+		+string("<body bgcolor = ffffff font-family=Times NEw Roman color=#fff font-size=16px>\r\n");
 	DIR *dp;
 	struct dirent *dirp;
+	struct stat buf;
+	string dir;	
 	if((dp=opendir(filename.c_str()))==NULL)
-		cout<<"can not open this directory";
-	int num=0;
+		cout<<"can not open this directory"<<endl;
+	int num=1;
+	int length = filename.length();
+	if(filename[length] == '/'){
+		int pos = filename.rfind('/',length);
+		dir = filename.substr(pos+1,length);
+//		dir = dir+'/';
+	}
+	else{
+		int pos = filename.find_last_of('/');
+		dir = filename.substr(pos+1,length);
+		dir += '/';
+	}
+ 	s += "<a href=\"/\">/</a>";
 	while((dirp = readdir(dp))!=NULL)
 	{
-		
-		stat(dirp->d_name,&sbuf);
-		if(strcmp(dirp->d_name,".")==0 || strcmp(dirp->d_name,".."))
+		string name = "test/" + dir + dirp->d_name;
+		int i = stat(const_cast<char*>(name.c_str()),&buf);
+		if(strcmp(dirp->d_name,".")==0 || strcmp(dirp->d_name,"..")==0)
 			continue;
-		s = s+inttostr(num++)+dirp->d_name+inttostr(sbuf.st_size);
-			//+const_cast<char*>(sbuf.st_mtime);
+		s = s+"<p><pre>"+inttostr(num++)+" <a href="+dir+dirp->d_name+"> "+dirp->d_name+"</a>" +" " + inttostr(buf.st_size)+" "
+			+ TimeChange(sbuf.st_mtime)+"</pre></p><br/>";
+		//s = s+inttostr(num++)+" "+dirp->d_name+" "+inttostr(buf.st_size)+" "+TimeChange(buf.st_mtime)+"<br/>";
 	}
+	closedir(dp);
+	s += "</body></html>";
 	return s;
 	
 	
-}*/
+}
+const string HTTPResponse::TimeChange(const time_t ti)
+{
+	string time;
+	struct tm* date;
+	date = localtime(&ti);
+	return asctime(date);
+}
 
 
 const string HTTPResponse::getfilename() 
@@ -124,7 +149,7 @@ const string HTTPResponse::getfiletype()
 	else if (filename.find(".jpg"))
 		return string("image/jpeg");
 	else
-		return string("text/plain");
+		return string("application/octet-stream");
 }
 
 void HTTPResponse::respond()
@@ -132,21 +157,24 @@ void HTTPResponse::respond()
 	//cout<<"respond"<<endl;
 	if(stat(const_cast<char*>(filename.c_str()),&sbuf) < 0)//文件是否存在
 		throw ERROR("404","Not found","The Web server couldn't find this file.");
-/*	if(S_ISDIR(sbuf.st_mode)){
-		dir_server();
-		cout<<"This is a directory!";
-
-	}*/
-		//cout<<"This is a directory!";
-	if(!(S_ISREG(sbuf.st_mode))||!(S_IRUSR & sbuf.st_mode)){//访问权限
+	if(/*!(S_ISREG(sbuf.st_mode))||*/!(S_IRUSR & sbuf.st_mode)){//访问权限
 	
 		throw ERROR("403","Forbidden","Fobidden this request");
+	}	
+	IoWriter writer(getfd());
+	if(S_ISDIR(sbuf.st_mode)){
+	//	dir_server();
+//		string s = dir_server();
+		writer.writeString(buildresheaders());
+		writer.writeString(dir_server());
+		cout<<"This is a directory!"<<endl;
+		
 	}
+	else{
 	//write
 	//cout<<"write"<<endl;
-	IoWriter writer(getfd());
 	//cout<<"write files"<<endl;
-	writer.writeString(buildresheaders());
-	writer.writeFile(getfilename(), getStat().st_size);
-	
+		writer.writeString(buildresheaders());
+		writer.writeFile(getfilename(), getStat().st_size);
+	}
 }

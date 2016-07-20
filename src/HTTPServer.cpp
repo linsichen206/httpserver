@@ -7,21 +7,26 @@
 http_server::http_server(){
 	
 	if((socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0 ){
-	//	throw "socket() failed";
+		cout<<"socket() failed"<<endl;
+		cout<<"errno = "<<errno<<endl;
 	}
 	
 	//init
+	int on =1;
+	int ret = setsockopt(socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
 	memset(&myserver, 0, sizeof(myserver));
 	myserver.sin_family = AF_INET;
 	myserver.sin_addr.s_addr = htonl(INADDR_ANY);//自动获取本机地址
 	myserver.sin_port = htons(DEFAULT_PORT);//监听端口
 	
 	if( bind(socket_fd, (sockaddr*) &myserver, sizeof(myserver)) < 0 ){
-	//	throw"bind() failed";
+		cout<<"bind() failed"<<endl;
+		cout<<"errno = "<<errno<<endl;
 	}
 	
 	if( listen(socket_fd, 10) < 0 ){
-	//	throw"listen() failed";
+		cout<<"listen() failed"<<endl;
+		cout<<"errno = "<<errno<<endl;
 	}
 }
 
@@ -30,7 +35,8 @@ int http_server::recv_msg(){
 	while(1){
 		socklen_t sin_size = sizeof(struct sockaddr_in);
 		if( (accept_fd = accept(socket_fd, (struct sockaddr*) &remote_addr, &sin_size)) == -1 ){
-		//	throw"Accept error!";
+			cout<<"Accept error!"<<endl;
+			cout<<"errno = "<<errno<<endl;
 			continue;
 		}
 		printf("Receive a connettion from %s\n", (char*) inet_ntoa(remote_addr.sin_addr));

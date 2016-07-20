@@ -35,7 +35,8 @@ private:
 	struct stat& getStat();
 	const string typetostr(string::size_type sizeType);
 	const string inttostr(int num);
-//	const string dir_server();
+	const string dir_server();
+	const string TimeChange(const time_t ti);
 	const string buildreserrorheaders(const string errnum, const string msg);
 	const string buildreserrorbody(const string errnum,const string msg, const string longmsg);
 	const string buildresheaders();

@@ -36,7 +36,7 @@ int HTTPGetRequest::getfd() const
 void HTTPGetRequest :: run()
 {
 	parse_uri();
-	cout<<uri<<endl;
+	//cout<<uri<<endl;
 	HTTPResponse Res(fileDescriptor,uri);
 	Res.run();
 }
