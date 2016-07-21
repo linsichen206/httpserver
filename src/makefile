@@ -3,11 +3,13 @@ web_server:main.o HTTPServer.o HTTPRequest.o HTTPGetRequest.o HTTPResponse.o IoW
  main.o:main.cpp server.h
 	g++ -c  main.cpp
 HTTPServer.o:HTTPRequest.cpp server.h
-	g++ -c  HTTPServer.cpp
+	g++ -c   HTTPServer.cpp
 HTTPRequest.o:HTTPRequest.cpp HTTPRequest.h
-	g++ -c  HTTPRequest.cpp
+	g++ -c   HTTPRequest.cpp
 IoWriter.o:IoWriter.h
-	g++ -c IoWriter.cpp
+	g++ -c  IoWriter.cpp
+HTTPGetRequest.o:HTTPGetRequest.cpp HTTPGetRequest.h
+	g++ -c  HTTPGetRequest.cpp
 HTTPResponse.o:HTTPResponse.h ERRORHEAD.h
 	g++ -c -g HTTPResponse.cpp
 clean:

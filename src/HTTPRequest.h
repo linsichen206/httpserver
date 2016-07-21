@@ -9,6 +9,7 @@
 //Requset.h
 #include <iostream>
 #include <string>
+#include <sstream>
 #include "HTTPGetRequest.h"
 #define MAXMETHODLINE 10
 #define MAXURILINE 20

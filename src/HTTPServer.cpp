@@ -13,7 +13,9 @@ http_server::http_server(){
 	
 	//init
 	int on =1;
-	int ret = setsockopt(socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
+	const char chopt = 1;
+	int ret1 = setsockopt(socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));	
+	int ret2 = setsockopt(socket_fd,IPPROTO_TCP,TCP_NODELAY,&chopt,sizeof(char));
 	memset(&myserver, 0, sizeof(myserver));
 	myserver.sin_family = AF_INET;
 	myserver.sin_addr.s_addr = htonl(INADDR_ANY);//自动获取本机地址
@@ -60,6 +62,7 @@ int http_server::recv_msg(){
 			}
 			exit(0);
 		}
+	//	sleep(1);
 		close(accept_fd);
 	}
 	return 0;

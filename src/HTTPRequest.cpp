@@ -20,10 +20,14 @@ HTTPRequest::HTTPRequest(int fd):fileDescriptor(fd) {
 }
 
 void HTTPRequest :: Requestparse(char *buf){
-	char METHOD[MAXMETHODLINE],URI[MAXURILINE];
-	sscanf(buf, "%s %s",METHOD,URI);
-	this->method = METHOD;
-	this->uri = URI;
+	stringstream ss;
+	ss<<buf;
+	ss>>this->method;
+	ss>>this->uri;
+	//char METHOD[MAXMETHODLINE],URI[MAXURILINE];
+	//sscanf(buf, "%s %s",METHOD,URI);
+	//this->method = METHOD;
+	//this->uri = URI;
 	/*string METHOD,FILEPATH,VERSION;
 	istringstream ss(this.buffer);
 	ss>>METHOD>>FILEPATH>>VERSION;

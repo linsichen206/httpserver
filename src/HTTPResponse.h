@@ -31,7 +31,7 @@ private:
 	void respond();
 	int getfd() const;
 	const string getfilename();
-	const string getfiletype();
+	const string getfiletype(const int iscontent);
 	struct stat& getStat();
 	const string typetostr(string::size_type sizeType);
 	const string inttostr(int num);
@@ -39,7 +39,7 @@ private:
 	const string TimeChange(const time_t ti);
 	const string buildreserrorheaders(const string errnum, const string msg);
 	const string buildreserrorbody(const string errnum,const string msg, const string longmsg);
-	const string buildresheaders();
+	const string buildresheaders(const int iscontent);
 	struct stat sbuf;
 	int fileDescriptor;
 	string filename;
