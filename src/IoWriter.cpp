@@ -10,7 +10,7 @@ void throw(char *msg)
 ssize_t rio_writen(int fd, void *usrbuf, size_t n)
 {
 	size_t nleft = n;
-	ssize_t nwritten;
+	ssize_t nwritten = 0;
 	char *bufp = reinterpret_cast<char*>(usrbuf);
 
 	while (nleft > 0)
@@ -22,9 +22,13 @@ ssize_t rio_writen(int fd, void *usrbuf, size_t n)
 			else
 				return -1; /* errorno set by write() */
 		}
+//fsync(fd);
+//
+//		printf("msg[%s],nwriten[%d],nleft[%d]",bufp,nwritten,nleft-nwritten);
 		nleft -= nwritten;
 		bufp += nwritten;
 	}
+
 	return n;
 }
 

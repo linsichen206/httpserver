@@ -17,6 +17,61 @@ HTTPResponse :: HTTPResponse(int fd, string uri): fileDescriptor(fd),filename(ur
 
 };
 
+const string HTTPResponse::TimeChange(const time_t ti)
+{
+	string time;
+	struct tm* date;
+	date = localtime(&ti);
+	return asctime(date);
+}
+
+
+const string HTTPResponse::getfilename() 
+{
+	return filename;
+}
+
+int HTTPResponse::getfd() const
+{
+	return fileDescriptor;
+}
+
+struct stat& HTTPResponse::getStat()
+{
+	return sbuf;
+}
+
+const string HTTPResponse::typetostr(string::size_type sizeType)//数据转换
+{
+	stringstream ss;
+	string s;
+	ss<<sizeType;
+	ss>>s;
+	return s;
+}
+const string HTTPResponse::inttostr(int num)
+{
+	stringstream ss;
+	string s;
+	ss<<num;
+	ss>>s;
+	return s;
+}
+const string HTTPResponse::getfiletype(const int iscontent)
+{
+	string filename = getfilename();
+	//int i= filename.find(".html");
+	if(iscontent == 1)
+		return string("text/html");	
+	else if(filename.find(".html") != -1)
+		return string("text/html");
+	else if (filename.find(".gif") !=  -1)
+		return string("image/gif");
+	else if (filename.find(".jpg") !=  -1)
+		return string("image/jpeg");
+	else
+		return string("application/octet-stream");
+}
 void HTTPResponse::run()
 {
 	try{
@@ -51,30 +106,20 @@ const string HTTPResponse::buildreserrorbody(const string errnum,const string ms
 				+content;
 }
 
-const string HTTPResponse::typetostr(string::size_type sizeType)//数据转换
-{
-	stringstream ss;
-	string s;
-	ss<<sizeType;
-	ss>>s;
-	return s;
-}
-const string HTTPResponse::inttostr(int num)
-{
-	stringstream ss;
-	string s;
-	ss<<num;
-	ss>>s;
-	return s;
-}
-
 const string HTTPResponse::buildresheaders(const int iscontent)
 {
-	return "HTTP/1.0 200 OK\r\n"+string("Server: Web server by Sven\r\n")
+	time_t now;
+	return "HTTP/1.1 200\r\n"+string("Server: Web server by Sven\r\n")
 		+string("Connection: keep-alive\r\n")
 		+string("Content-type: ")+getfiletype(iscontent)+"\r\n"
+	//	+string("Content-Range:0-")+typetostr(getStat().st_size)+"\r\n"
 		+string("Content-Length: ")+typetostr(getStat().st_size)+"\r\n\r\n";
+//		+string("Date: ")+TimeChange(time(&now))+"\r\n"
+//		+string("Accept-Ranges: bytes") + "\r\n"
+//		+string("Last-Modified: ")+TimeChange(getStat().st_mtime)+"\r\n"
+//		+string("ETag: dc588f57:")+typetostr(getStat().st_size)+"\r\n\r\n";
 }
+
 
 const string HTTPResponse::dir_server(){
 	string s=// "<html><title> Directory </title>"
@@ -116,45 +161,6 @@ const string HTTPResponse::dir_server(){
 	return s;
 	
 	
-}
-const string HTTPResponse::TimeChange(const time_t ti)
-{
-	string time;
-	struct tm* date;
-	date = localtime(&ti);
-	return asctime(date);
-}
-
-
-const string HTTPResponse::getfilename() 
-{
-	return filename;
-}
-
-int HTTPResponse::getfd() const
-{
-	return fileDescriptor;
-}
-
-struct stat& HTTPResponse::getStat()
-{
-	return sbuf;
-}
-
-const string HTTPResponse::getfiletype(const int iscontent)
-{
-	string filename = getfilename();
-	//int i= filename.find(".html");
-	if(iscontent == 1)
-		return string("text/html");	
-	else if(filename.find(".html") != -1)
-		return string("text/html");
-	else if (filename.find(".gif") !=  -1)
-		return string("image/gif");
-	else if (filename.find(".jpg") !=  -1)
-		return string("image/jpeg");
-	else
-		return string("application/*");
 }
 
 void HTTPResponse::respond()
